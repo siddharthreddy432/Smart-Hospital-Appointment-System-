@@ -70,26 +70,30 @@ export default function LoginPage() {
       );
       return;
     }
+    if (!gmailAddress.trim() || !gmailAddress.includes('@')) {
+      setPatientError('Please enter a valid Gmail address.');
+      return;
+    }
     setPatientBusy(true);
     try {
       const ok = await loginWithGmailPopup(userName, 'patient');
       if (ok) {
         router.push('/book');
+        return;
       }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '';
-      if (!msg.includes('auth/popup-closed-by-user')) {
-        try {
-          await loginWithMatchedGmail(userName, gmailAddress, 'patient');
-          router.push('/book');
-        } catch (fallbackErr: unknown) {
-          setPatientError(
-            fallbackErr instanceof Error
-              ? fallbackErr.message
-              : 'Could not complete Gmail sign-in.'
-          );
-        }
-      }
+    } catch {
+      // Fallback for custom domains (sahs.telis.tech) where Firebase popup domain whitelist may not be configured
+    }
+
+    try {
+      await loginWithMatchedGmail(userName, gmailAddress, 'patient');
+      router.push('/book');
+    } catch (fallbackErr: unknown) {
+      setPatientError(
+        fallbackErr instanceof Error
+          ? fallbackErr.message
+          : 'Could not complete Gmail sign-in.'
+      );
     } finally {
       setPatientBusy(false);
     }
