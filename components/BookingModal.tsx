@@ -51,9 +51,9 @@ export default function BookingModal({
   const [doctorId, setDoctorId] = useState<number>(
     initialDoctorId || doctors[0]?.id || 1
   );
-  const [userName, setUserName] = useState<string>(activeUserName || 'Siddharth Reddy');
+  const [userName, setUserName] = useState<string>(activeUserName || 'Rahul Sharma');
   const [userEmail, setUserEmail] = useState<string>(
-    activeUserEmail || 'siddharthreddy432@gmail.com'
+    activeUserEmail || 'patient.care@example.com'
   );
   const [appointmentDate, setAppointmentDate] = useState<string>('2026-11-06');
   const [timeSlot, setTimeSlot] = useState<string>('10:00');

@@ -100,6 +100,7 @@ export default function SeparateAdminPortalPage() {
     setStatusBanner,
     theme,
     toggleTheme,
+    mounted,
   } = useHospital();
 
   const [usernameInput, setUsernameInput] = useState('Admin');
@@ -399,11 +400,12 @@ export default function SeparateAdminPortalPage() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              suppressHydrationWarning
               onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              aria-label={mounted && theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
               className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
             >
-              {theme === 'dark' ? (
+              {mounted && theme === 'dark' ? (
                 <Sun className="w-4 h-4 text-amber-400" />
               ) : (
                 <Moon className="w-4 h-4" />
@@ -851,12 +853,13 @@ export default function SeparateAdminPortalPage() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
+              suppressHydrationWarning
               onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={mounted && theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={mounted && theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
             >
-              {theme === 'dark' ? (
+              {mounted && theme === 'dark' ? (
                 <Sun className="w-4 h-4 text-amber-400" />
               ) : (
                 <Moon className="w-4 h-4" />

@@ -7,7 +7,7 @@ import {
 } from './csv-export';
 
 test('escapeCsvCell wraps values in quotes and escapes double quotes', () => {
-  assert.equal(escapeCsvCell('Siddharth "Admin" Reddy'), '"Siddharth ""Admin"" Reddy"');
+  assert.equal(escapeCsvCell('Rahul "Admin" Sharma'), '"Rahul ""Admin"" Sharma"');
   assert.equal(escapeCsvCell(42), '"42"');
   assert.equal(escapeCsvCell(null), '""');
 });
@@ -18,8 +18,8 @@ test('generateAppointmentsCsv outputs headers and formatted appointment rows', (
       id: 101,
       appointmentDate: '2026-11-05',
       timeSlot: '10:00 AM',
-      patientName: 'Siddharth Reddy',
-      patientEmail: 'siddharthreddy432@gmail.com',
+      patientName: 'Rahul Sharma',
+      patientEmail: 'patient.care@example.com',
       patientPhone: '+1 415-555-0199',
       doctorName: 'Dr. Kabir Verma',
       doctorSpecialty: 'General Medicine',
@@ -38,7 +38,7 @@ test('generateAppointmentsCsv outputs headers and formatted appointment rows', (
   assert.ok(lines[0].includes('"Appointment ID"'));
   assert.ok(lines[0].includes('"Patient Gmail"'));
   assert.ok(lines[1].includes('"101"'));
-  assert.ok(lines[1].includes('"siddharthreddy432@gmail.com"'));
+  assert.ok(lines[1].includes('"patient.care@example.com"'));
   assert.ok(lines[1].includes('"High Fever & Chills"'));
   assert.ok(lines[1].includes('"Enabled"'));
 });

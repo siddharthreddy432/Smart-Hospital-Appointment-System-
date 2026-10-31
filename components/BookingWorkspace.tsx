@@ -139,8 +139,8 @@ export default function BookingWorkspace({
     createSyncSessionState(
       sessionId,
       {
-        patientName: sessionUser.userName || 'Siddharth Reddy',
-        patientEmail: sessionUser.email || 'siddharthreddy432@gmail.com',
+        patientName: sessionUser.userName || 'Rahul Sharma',
+        patientEmail: sessionUser.email || 'patient.care@example.com',
         doctorId: initialDocParam
           ? Number(initialDocParam)
           : doctors[0]?.id || 1,
@@ -247,8 +247,8 @@ export default function BookingWorkspace({
             sessionId,
             action: 'init',
             initialFields: {
-              patientName: sessionUser.userName || 'Siddharth Reddy',
-              patientEmail: sessionUser.email || 'siddharthreddy432@gmail.com',
+              patientName: sessionUser.userName || 'Rahul Sharma',
+              patientEmail: sessionUser.email || 'patient.care@example.com',
               doctorId: initialDocParam
                 ? Number(initialDocParam)
                 : doctors[0]?.id || 1,
@@ -523,8 +523,8 @@ export default function BookingWorkspace({
           sessionId,
           action: 'simulate_conflict',
           field: 'patientName',
-          desktopValue: fields.patientName || 'Siddharth Reddy',
-          mobileValue: 'Rahul Sharma',
+          desktopValue: fields.patientName || 'Rahul Sharma',
+          mobileValue: 'Rahul K. Sharma',
           channelSecret: channelSecretRef.current,
           mobileSecret: mobileSecretRef.current,
         }),

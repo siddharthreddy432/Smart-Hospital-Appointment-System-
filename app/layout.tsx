@@ -6,6 +6,7 @@ const SAHS_LOGO_PATH =
   '/assets/aistudio/Gemini_Generated_Image_xgunhyxgunhyxgun_8142619c.png';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://sahs.telis.tech'),
   title: 'SAHS — Smart Appointment & Hospital System',
   description:
     'Modern SaaS healthcare platform for hospital appointment scheduling, real-time dual-device QR booking sync, digital arrival check-in passes, and clinical queue management.',
@@ -43,6 +44,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('sahs_theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`,
+          }}
+        />
         <link rel="icon" type="image/png" href={SAHS_LOGO_PATH} />
         <link rel="apple-touch-icon" href={SAHS_LOGO_PATH} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

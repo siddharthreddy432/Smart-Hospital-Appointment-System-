@@ -26,10 +26,10 @@ export default function LoginPage() {
   } = useHospital();
 
   const [userName, setUserName] = useState<string>(
-    sessionUser.userName || 'Siddharth Reddy'
+    sessionUser.userName || 'Rahul Sharma'
   );
   const [gmailAddress, setGmailAddress] = useState<string>(
-    sessionUser.email || 'siddharthreddy432@gmail.com'
+    sessionUser.email || 'patient.care@example.com'
   );
   const [patientBusy, setPatientBusy] = useState<boolean>(false);
   const [patientError, setPatientError] = useState<string | null>(null);
@@ -172,7 +172,7 @@ export default function LoginPage() {
                     type="text"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    placeholder="e.g., Siddharth Reddy"
+                    placeholder="e.g., Rahul Sharma"
                     className="w-full pl-9 pr-4 py-2 text-xs border rounded-xl"
                     required
                   />
@@ -193,7 +193,7 @@ export default function LoginPage() {
                     type="email"
                     value={gmailAddress}
                     onChange={(e) => setGmailAddress(e.target.value)}
-                    placeholder="siddharthreddy432@gmail.com"
+                    placeholder="patient.care@example.com"
                     className="w-full pl-9 pr-4 py-2 text-xs font-mono border rounded-xl"
                     required
                   />

@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useCallback,
   useRef,
+  useSyncExternalStore,
 } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -81,6 +82,7 @@ interface HospitalContextValue {
   loading: boolean;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  mounted: boolean;
   sessionUser: SessionUser;
   isAdminAuthenticated: boolean;
   statusBanner: string | null;
@@ -127,12 +129,14 @@ function PersistentHeader({
   setStatusBanner,
   theme,
   toggleTheme,
+  mounted,
 }: {
   sessionUser: SessionUser;
   statusBanner: string | null;
   setStatusBanner: (msg: string | null) => void;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  mounted: boolean;
 }) {
   const pathname = usePathname();
   const { prefersReducedMotion } = useSmoothScroll();
@@ -348,20 +352,21 @@ function PersistentHeader({
             {/* Dark / Light Mode Toggle with Micro-Detailing */}
             <button
               type="button"
+              suppressHydrationWarning
               onClick={toggleTheme}
               aria-label={
-                theme === 'dark'
+                mounted && theme === 'dark'
                   ? 'Switch to light theme'
                   : 'Switch to dark theme'
               }
               title={
-                theme === 'dark'
+                mounted && theme === 'dark'
                   ? 'Switch to Light Mode'
                   : 'Switch to Dark Mode'
               }
               className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06] transition-all duration-150 active:scale-[0.92] cursor-pointer"
             >
-              {theme === 'dark' ? (
+              {mounted && theme === 'dark' ? (
                 <Sun className="w-4 h-4 text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-12" />
               ) : (
                 <Moon className="w-4 h-4 text-slate-700 transition-transform duration-200 rotate-0 hover:-rotate-12" />
@@ -570,6 +575,31 @@ const INITIAL_DOCTORS_SEED: Doctor[] = [
   },
 ];
 
+const emptySubscribe = () => () => {};
+
+function getMountedSnapshot(): boolean {
+  return true;
+}
+
+function getServerMountedSnapshot(): boolean {
+  return false;
+}
+
+function getStoredThemeSnapshot(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  try {
+    const saved = window.localStorage.getItem('sahs_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+  } catch {
+    // ignore
+  }
+  return 'light';
+}
+
+function getServerStoredThemeSnapshot(): 'light' | 'dark' {
+  return 'light';
+}
+
 export default function HospitalProvider({
   children,
 }: {
@@ -584,21 +614,25 @@ export default function HospitalProvider({
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [historyLogs, setHistoryLogs] = useState<AppointmentHistoryLog[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = window.localStorage.getItem('sahs_theme');
-        if (saved === 'dark' || saved === 'light') return saved;
-      } catch {
-        // ignore
-      }
-    }
-    return 'light';
-  });
+
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    getMountedSnapshot,
+    getServerMountedSnapshot
+  );
+
+  const storedTheme = useSyncExternalStore(
+    emptySubscribe,
+    getStoredThemeSnapshot,
+    getServerStoredThemeSnapshot
+  );
+
+  const [themeOverride, setThemeOverride] = useState<'light' | 'dark' | null>(null);
+  const theme: 'light' | 'dark' = themeOverride ?? storedTheme;
 
   const [sessionUser, setSessionUser] = useState<SessionUser>({
-    userName: 'Siddharth Reddy',
-    email: 'siddharthreddy432@gmail.com',
+    userName: 'Rahul Sharma',
+    email: 'patient.care@example.com',
     role: 'patient',
     patientId: null,
     idToken: null,
@@ -612,32 +646,27 @@ export default function HospitalProvider({
   const [pendingRole, setPendingRole] = useState<'patient' | 'admin'>('patient');
   const [statusBanner, setStatusBanner] = useState<string | null>(null);
 
-  // Initialize and sync Light/Dark theme class
+  // Sync the DOM class whenever theme changes (external DOM mutation only, no setState in effect)
   useEffect(() => {
     try {
-      const savedTheme = window.localStorage.getItem('sahs_theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-      }
+      document.documentElement.classList.toggle('dark', theme === 'dark');
     } catch {
-      // ignore storage errors
+      // ignore
     }
-  }, []);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      try {
-        window.localStorage.setItem('sahs_theme', next);
-      } catch {
-        // ignore
-      }
-      if (typeof document !== 'undefined') {
-        document.documentElement.classList.toggle('dark', next === 'dark');
-      }
-      return next;
-    });
-  }, []);
+    const next = theme === 'dark' ? 'light' : 'dark';
+    try {
+      window.localStorage.setItem('sahs_theme', next);
+    } catch {
+      // ignore
+    }
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('dark', next === 'dark');
+    }
+    setThemeOverride(next);
+  }, [theme]);
 
   const showBanner = useCallback((msg: string | null) => {
     setStatusBanner(msg);
@@ -697,8 +726,8 @@ export default function HospitalProvider({
                 window.sessionStorage.setItem('sahs_admin_auth', 'true');
               }
               setSessionUser({
-                userName: p.userName || 'Siddharth Reddy',
-                email: p.email || 'siddharthreddy432@gmail.com',
+                userName: p.userName || 'Rahul Sharma',
+                email: p.email || 'patient.care@example.com',
                 role: p.role === 'ADMIN' ? 'admin' : 'patient',
                 patientId: p.patientId ?? null,
                 idToken: null,
@@ -710,17 +739,17 @@ export default function HospitalProvider({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  userName: 'Siddharth Reddy',
-                  displayName: 'Siddharth Reddy',
-                  email: 'siddharthreddy432@gmail.com',
+                  userName: 'Rahul Sharma',
+                  displayName: 'Rahul Sharma',
+                  email: 'patient.care@example.com',
                   role: 'patient',
                 }),
               });
               if (defaultSync.ok) {
                 const synced = await defaultSync.json();
                 setSessionUser({
-                  userName: 'Siddharth Reddy',
-                  email: 'siddharthreddy432@gmail.com',
+                  userName: 'Rahul Sharma',
+                  email: 'patient.care@example.com',
                   role: 'patient',
                   patientId: synced.patient?.id || null,
                   idToken: null,
@@ -983,6 +1012,7 @@ export default function HospitalProvider({
         loading,
         theme,
         toggleTheme,
+        mounted,
         sessionUser,
         isAdminAuthenticated,
         statusBanner,
@@ -1022,6 +1052,7 @@ export default function HospitalProvider({
                 setStatusBanner={showBanner}
                 theme={theme}
                 toggleTheme={toggleTheme}
+                mounted={mounted}
               />
 
               {/* Coordinated Scene Transition Stage */}

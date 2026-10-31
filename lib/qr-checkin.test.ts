@@ -10,8 +10,8 @@ import {
 test('generateCheckInCode produces deterministic SAHS check-in code', () => {
   const input = {
     appointmentId: 42,
-    patientName: 'Siddharth Reddy',
-    patientEmail: 'siddharthreddy432@gmail.com',
+    patientName: 'Rahul Sharma',
+    patientEmail: 'patient.care@example.com',
     doctorName: 'Dr. Elena Rostova',
     appointmentDate: '2026-11-04',
     timeSlot: '10:00 AM',
@@ -26,8 +26,8 @@ test('generateCheckInCode produces deterministic SAHS check-in code', () => {
 test('generateAppointmentQrPass builds 21x21 QR matrix with intact finder patterns and scannableMatrix', () => {
   const pass = generateAppointmentQrPass({
     appointmentId: 101,
-    patientName: 'Siddharth Reddy',
-    patientEmail: 'siddharthreddy432@gmail.com',
+    patientName: 'Rahul Sharma',
+    patientEmail: 'patient.care@example.com',
     patientPhone: '+91 98765 43210',
     patientAge: 28,
     patientGender: 'Male',

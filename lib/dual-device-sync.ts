@@ -209,9 +209,9 @@ export function createDefaultBookingFields(
 ): SyncedBookingFormFields {
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
   return {
-    patientName: 'Siddharth Reddy',
+    patientName: 'Rahul Sharma',
     patientPhone: '+91 98450 11223',
-    patientEmail: 'siddharthreddy432@gmail.com',
+    patientEmail: 'patient.care@example.com',
     age: '29',
     gender: 'Male',
     bloodGroup: 'O+',
