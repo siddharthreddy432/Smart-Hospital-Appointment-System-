@@ -169,6 +169,7 @@ export default function SeparateAdminPortalPage() {
   const [isSimulatingCamera, setIsSimulatingCamera] = useState<boolean>(false);
   const [cameraActive, setCameraActive] = useState<boolean>(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [showPermissionModal, setShowPermissionModal] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const startCamera = async () => {
@@ -177,14 +178,17 @@ export default function SeparateAdminPortalPage() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
+        audio: true,
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       }
+      setShowPermissionModal(false);
     } catch {
-      setCameraError('Camera access denied or unavailable. Please check camera permissions in browser settings.');
+      setCameraError('Camera and microphone access denied or unavailable. Please check permissions.');
       setCameraActive(false);
+      setShowPermissionModal(true);
     }
   };
 
@@ -850,36 +854,62 @@ export default function SeparateAdminPortalPage() {
     <div className="min-h-screen text-slate-900 dark:text-slate-100">
       {/* Reimagined Unboxed Admin Header */}
       <header className="bg-white/85 dark:bg-[#0B1211]/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 sticky top-0 z-40 transition-colors">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-16 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="relative w-9 h-9 shrink-0">
-              <Image
-                src={SAHS_LOGO_SRC}
-                alt="SAHS Logo"
-                fill
-                sizes="36px"
-                className="object-contain"
-                priority
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base text-slate-900 dark:text-white tracking-tight">
-                  SAHS Admin Dashboard
-                </span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                  Verified
+        <div className="max-w-[1280px] mx-auto px-3 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center justify-between sm:justify-start gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+                <Image
+                  src={SAHS_LOGO_SRC}
+                  alt="SAHS Logo"
+                  fill
+                  sizes="36px"
+                  className="object-contain"
+                  priority
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
+                    SAHS Admin
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    Verified
+                  </span>
+                </div>
+                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 block truncate max-w-[200px] sm:max-w-none">
+                  Smart Appointment &amp; Hospital Operations
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 block">
-                Smart Appointment &amp; Hospital Operations
-              </span>
+            </div>
+
+            {/* Mobile Quick Actions */}
+            <div className="flex items-center gap-1.5 sm:hidden">
+              <button
+                type="button"
+                suppressHydrationWarning
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800"
+              >
+                {mounted && theme === 'dark' ? (
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                ) : (
+                  <Moon className="w-3.5 h-3.5" />
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={logoutAdmin}
+                className="px-2 py-1 rounded-lg text-[10px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/50"
+              >
+                Lock
+              </button>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="hidden sm:flex flex-wrap items-center gap-2">
             <button
               type="button"
               suppressHydrationWarning
@@ -898,15 +928,14 @@ export default function SeparateAdminPortalPage() {
             <button
               type="button"
               onClick={handleExportCsv}
-              className="sahs-button-primary px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+              className="sahs-button-primary px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" /> Export Appointments CSV (
-              {appointments.length})
+              <Download className="w-3.5 h-3.5" /> Export CSV ({appointments.length})
             </button>
 
             <Link
               href="/"
-              className="sahs-button-secondary px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1"
+              className="sahs-button-secondary px-2.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1"
             >
               <span>Patient Site</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -915,16 +944,16 @@ export default function SeparateAdminPortalPage() {
             <button
               type="button"
               onClick={logoutAdmin}
-              className="sahs-button-secondary px-3 py-1.5 rounded-xl font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-1 cursor-pointer"
+              className="sahs-button-secondary px-2.5 py-1.5 rounded-xl font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-1 cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5" /> Lock Admin
+              <LogOut className="w-3.5 h-3.5" /> Lock
             </button>
           </div>
         </div>
 
         {/* Clean Unboxed Admin Tabs */}
-        <div className="border-t border-slate-200/60 dark:border-slate-800/70 px-4 sm:px-6 overflow-x-auto">
-          <div className="max-w-[1280px] mx-auto flex items-center gap-1">
+        <div className="border-t border-slate-200/60 dark:border-slate-800/70 px-3 sm:px-6 overflow-x-auto scrollbar-none">
+          <div className="max-w-[1280px] mx-auto flex items-center gap-1 min-w-max">
             {[
               { id: 'overview', label: 'Overview', icon: Copy },
               {
@@ -1215,9 +1244,14 @@ export default function SeparateAdminPortalPage() {
                       </p>
 
                       {cameraError && (
-                        <p className="text-[11px] text-rose-400 mt-1 font-semibold">
-                          {cameraError}
-                        </p>
+                        <div className="space-y-1.5 mt-2">
+                          <p className="text-[11px] text-rose-400 font-semibold">
+                            {cameraError}
+                          </p>
+                          <p className="text-[10px] text-slate-400">
+                            Browser permissions may be blocked. You can retry permission or upload a QR image file below.
+                          </p>
+                        </div>
                       )}
 
                       <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
@@ -1227,8 +1261,43 @@ export default function SeparateAdminPortalPage() {
                           className="px-3.5 py-2 rounded-xl text-xs font-bold sahs-button-primary inline-flex items-center gap-1.5 cursor-pointer"
                         >
                           <Scan className="w-3.5 h-3.5" />
-                          <span>Request Camera &amp; Scan QR</span>
+                          <span>{cameraError ? 'Retry Camera Permission' : 'Request Camera & Scan QR'}</span>
                         </button>
+
+                        <label className="px-3.5 py-2 rounded-xl text-xs font-bold sahs-button-secondary inline-flex items-center gap-1.5 cursor-pointer">
+                          <span>Upload QR Pass Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              setCameraError(null);
+                              try {
+                                if ('BarcodeDetector' in window) {
+                                  // @ts-ignore
+                                  const detector = new BarcodeDetector({ formats: ['qr_code'] });
+                                  const bitmap = await createImageBitmap(file);
+                                  const results = await detector.detect(bitmap);
+                                  if (results && results.length > 0) {
+                                    setScanInput(results[0].rawValue);
+                                    handleVerifyCurrentInput();
+                                    return;
+                                  }
+                                }
+                                if (selectedScanApptId > 0) {
+                                  handleOpenScannerForAppt(selectedScanApptId);
+                                  showToast('Loaded selected appointment QR pass.');
+                                } else {
+                                  showToast('Image uploaded. Please select an appointment from the dropdown above to verify.');
+                                }
+                              } catch {
+                                setCameraError('Could not auto-decode QR image. Please select an appointment or paste the token.');
+                              }
+                            }}
+                            className="hidden"
+                          />
+                        </label>
 
                         {selectedScanApptId > 0 && (
                           <button
@@ -1330,6 +1399,61 @@ export default function SeparateAdminPortalPage() {
                     If scanned with Google Scanner, Google Lens, or public cameras, the encrypted payload cannot be decoded and the URL route (/qr-pass/verify) displays an explicit access denial screen to protect patient health confidentiality. Only this SAHS Admin Portal can authenticate arrival and grant hospital access.
                   </p>
                 </div>
+
+                {/* Camera & Microphone Permission Modal Prompt */}
+                {showPermissionModal && (
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4"
+                  >
+                    <div className="bg-white dark:bg-[#1E293B] border border-slate-300 dark:border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-slate-900 dark:text-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                          <ShieldAlert className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                            Camera &amp; Microphone Permission Required
+                          </h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            SAHS Admin Portal needs persistent camera and audio access to scan encrypted patient QR passes and verify arrival.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs space-y-1.5 border border-slate-200 dark:border-slate-800">
+                        <p className="font-semibold text-slate-800 dark:text-slate-200">How to re-enable permissions:</p>
+                        <ul className="list-disc list-inside text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
+                          <li>Click the lock/settings icon in your browser address bar.</li>
+                          <li>Set <strong>Camera</strong> and <strong>Microphone</strong> to <em>Allow</em>.</li>
+                          <li>Click the Retry button below.</li>
+                        </ul>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPermissionModal(false);
+                            startCamera();
+                          }}
+                          className="sahs-button-primary flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <Scan className="w-4 h-4" />
+                          <span>Retry Permission Request</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowPermissionModal(false)}
+                          className="sahs-button-secondary px-4 py-2.5 rounded-xl text-xs font-bold cursor-pointer"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Right 6 cols: Decrypted Patient Verification Card & Access Granting Action */}

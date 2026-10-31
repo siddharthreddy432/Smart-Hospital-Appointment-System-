@@ -43,6 +43,7 @@ import {
   LogIn,
   UserCheck,
   X,
+  Menu,
   LayoutDashboard,
   Stethoscope,
   Calendar,
@@ -147,6 +148,7 @@ function PersistentHeader({
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const previewStripRef = useRef<HTMLDivElement | null>(null);
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   const normalizedPathname = normalizeRoutePath(pathname);
 
@@ -409,8 +411,51 @@ function PersistentHeader({
               <span className="hidden sm:inline">Book Appointment</span>
               <span className="sm:hidden">Book</span>
             </Link>
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle Mobile Navigation Menu"
+              className="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06] transition-all cursor-pointer"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Collapsible Navigation Menu Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0D161C] px-4 py-3.5 space-y-2 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="grid grid-cols-1 gap-1">
+              {SAHS_NAV_ROUTES.map((item) => {
+                const Icon = NAV_ICON_MAP[item.href] || LayoutDashboard;
+                const isActive = isRouteActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-colors ${
+                      isActive
+                        ? 'bg-[#0F766E]/15 text-[#0F766E] dark:text-[#2DD4BF]'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon className="w-4 h-4" />
+                      <span>{item.label}</span>
+                    </div>
+                    <span className="text-[10px] font-mono opacity-70">
+                      {item.accentTag}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Interactive Visual Scene Strip */}
         <div
