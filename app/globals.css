@@ -1,0 +1,338 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --sahs-bg-base: #F6F9F8;
+  --sahs-bg-gradient: linear-gradient(135deg, #F0F7F5 0%, #F4F7FA 50%, #FAF9F5 100%);
+  --sahs-surface: #FFFFFF;
+  --sahs-surface-subtle: #F8FAFC;
+  --sahs-surface-muted: #F1F5F4;
+  --sahs-border: #E2E8F0;
+  --sahs-border-strong: #CBD5E1;
+  --sahs-text-primary: #0F172A;
+  --sahs-text-secondary: #475569;
+  --sahs-text-muted: #64748B;
+  --sahs-accent: #0F766E;
+  --sahs-accent-hover: #0D9488;
+  --sahs-accent-soft: rgba(15, 118, 110, 0.08);
+  --sahs-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 20px -4px rgba(15, 23, 42, 0.05);
+  --sahs-shadow-card-hover: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 28px -6px rgba(15, 118, 110, 0.12);
+}
+
+html.dark {
+  --sahs-bg-base: #0B1118;
+  --sahs-bg-gradient: linear-gradient(135deg, #0B1118 0%, #0F172A 50%, #111D2E 100%);
+  --sahs-surface: #1E293B;
+  --sahs-surface-subtle: #243248;
+  --sahs-surface-muted: #2A3B52;
+  --sahs-border: #334155;
+  --sahs-border-strong: #475569;
+  --sahs-text-primary: #F8FAFC;
+  --sahs-text-secondary: #CBD5E1;
+  --sahs-text-muted: #94A3B8;
+  --sahs-accent: #2DD4BF;
+  --sahs-accent-hover: #5EEAD4;
+  --sahs-accent-soft: rgba(45, 212, 191, 0.16);
+  --sahs-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --sahs-shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(45, 212, 191, 0.35);
+}
+
+/* Custom Sleek Scrollbar Across Whole Website (Removes native triangle arrows) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(15, 118, 110, 0.65);
+}
+
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html.dark *::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.3);
+}
+
+html.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(45, 212, 191, 0.7);
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+html.dark * {
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+@layer base {
+  html,
+  body {
+    font-family: "Plus Jakarta Sans", "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, sans-serif;
+    background-color: var(--sahs-bg-base);
+    background-image: var(--sahs-bg-gradient);
+    color: var(--sahs-text-primary);
+    line-height: 1.55;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: auto;
+  }
+
+  a,
+  button,
+  [role="button"],
+  select,
+  summary {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="number"],
+  input[type="password"],
+  input[type="tel"],
+  textarea {
+    cursor: text;
+  }
+
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    background-color: var(--sahs-surface-subtle);
+    color: var(--sahs-text-primary);
+    border-color: var(--sahs-border-strong);
+    transition: border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.15s ease;
+  }
+
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    background-color: var(--sahs-surface);
+    border-color: var(--sahs-accent);
+    box-shadow: 0 0 0 3px var(--sahs-accent-soft);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Manrope", "Plus Jakarta Sans", sans-serif;
+    font-weight: 700;
+    color: var(--sahs-text-primary);
+    line-height: 1.22;
+    letter-spacing: -0.022em;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+      Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Clean, refined clinical surfaces (Light & Dark aware) */
+.sahs-card {
+  background-color: var(--sahs-surface);
+  border: 1px solid var(--sahs-border);
+  border-radius: 16px;
+  box-shadow: var(--sahs-shadow-card);
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease;
+}
+
+.sahs-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--sahs-border-strong);
+  box-shadow: var(--sahs-shadow-card-hover);
+}
+
+.sahs-panel {
+  background-color: var(--sahs-surface-subtle);
+  border: 1px solid var(--sahs-border);
+  border-radius: 12px;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+/* Tactile Micro-Detailing on Primary Buttons */
+.sahs-button-primary {
+  position: relative;
+  background: linear-gradient(180deg, #11847B 0%, #0F766E 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(13, 148, 136, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 2px 5px rgba(15, 118, 110, 0.22),
+    0 1px 2px rgba(15, 23, 42, 0.08);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.14s ease,
+    filter 0.14s ease;
+}
+
+html.dark .sahs-button-primary {
+  background: linear-gradient(180deg, #14B8A6 0%, #0D9488 100%);
+  color: #042F2E;
+  font-weight: 700;
+  border-color: rgba(45, 212, 191, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 4px 14px rgba(20, 184, 166, 0.26);
+}
+
+.sahs-button-primary:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  filter: brightness(1.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 6px 16px -2px rgba(15, 118, 110, 0.34),
+    0 2px 6px rgba(15, 23, 42, 0.1);
+}
+
+.sahs-button-primary:active:not(:disabled) {
+  transform: scale(0.97) translateY(0.5px);
+  filter: brightness(0.96);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18),
+    0 1px 2px rgba(15, 118, 110, 0.15);
+}
+
+.sahs-button-primary:focus-visible {
+  outline: 2px solid var(--sahs-accent);
+  outline-offset: 2px;
+}
+
+/* Tactile Micro-Detailing on Secondary Buttons */
+.sahs-button-secondary {
+  position: relative;
+  background-color: var(--sahs-surface);
+  color: var(--sahs-text-primary);
+  border: 1px solid var(--sahs-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.sahs-button-secondary:hover:not(:disabled) {
+  background-color: var(--sahs-surface-muted);
+  border-color: var(--sahs-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+}
+
+.sahs-button-secondary:active:not(:disabled) {
+  transform: scale(0.97) translateY(0.5px);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.sahs-button-secondary:focus-visible {
+  outline: 2px solid var(--sahs-accent);
+  outline-offset: 2px;
+}
+
+/* Global tactile press feedback for interactive buttons across the app */
+button:not(:disabled):active,
+a.sahs-tactile:active {
+  transform: scale(0.975);
+}
+
+/* Subtle human touch pulse ring */
+@keyframes sahs-gentle-breathe {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.sahs-breathe-dot {
+  animation: sahs-gentle-breathe 2.8s ease-in-out infinite;
+}
+
+/* Ensure razor-sharp text and no font blurriness */
+* {
+  text-rendering: optimizeLegibility;
+}
+
+/* Dark mode contrast protection for legacy hardcoded classes */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #334155 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #2DD4BF !important;
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2) !important;
+}
+
+html.dark .sahs-panel {
+  background-color: #1E293B;
+  border-color: #334155;
+}
+
+html.dark .sahs-card {
+  background-color: #1E293B;
+  border-color: #334155;
+}
+
+

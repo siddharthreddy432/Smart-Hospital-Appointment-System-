@@ -1,0 +1,6 @@
+{
+  "name": "MedPulse Smart Hospital Appointment System",
+  "description": "Smart Hospital Appointment System with PostgreSQL persistence, Firebase Google Authentication, doctor schedules, appointment history, and ML-based appointment no-show probability prediction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
