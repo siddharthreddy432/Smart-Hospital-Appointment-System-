@@ -229,7 +229,7 @@ export default function BookingWorkspace({
             )}&mobileSecret=${encodeURIComponent(initialMobileSecret)}`,
             { cache: 'no-store' }
           );
-          if (pollRes.ok) {
+          if (pollRes.ok && (pollRes.headers.get('content-type') || '').includes('application/json')) {
             const pollData = await pollRes.json();
             if (!cancelled && pollData.session) {
               applyIncomingSession(pollData.session);
@@ -255,7 +255,9 @@ export default function BookingWorkspace({
             },
           }),
         });
-        if (!initRes.ok) throw new Error('Sync initialization failed');
+        if (!initRes.ok || !(initRes.headers.get('content-type') || '').includes('application/json')) {
+          throw new Error('Sync initialization failed');
+        }
         const initData = await initRes.json();
         const issuedSecret: string | null = initData.channelSecret || null;
         if (!cancelled) {
@@ -285,7 +287,7 @@ export default function BookingWorkspace({
               channelSecret: issuedSecret,
             }),
           });
-          if (scanRes.ok) {
+          if (scanRes.ok && (scanRes.headers.get('content-type') || '').includes('application/json')) {
             const scanData = await scanRes.json();
             if (!cancelled && scanData.session) {
               applyIncomingSession(scanData.session);
@@ -309,7 +311,7 @@ export default function BookingWorkspace({
                 channelSecret: issuedSecret,
               }),
             });
-            if (connRes.ok) {
+            if (connRes.ok && (connRes.headers.get('content-type') || '').includes('application/json')) {
               const connData = await connRes.json();
               if (!cancelled && connData.session) {
                 applyIncomingSession(connData.session);
@@ -367,7 +369,7 @@ export default function BookingWorkspace({
         const res = await fetch(`/api/sync-session?${params.toString()}`, {
           cache: 'no-store',
         });
-        if (!res.ok) return;
+        if (!res.ok || !(res.headers.get('content-type') || '').includes('application/json')) return;
         const data = await res.json();
         if (
           data.session &&
