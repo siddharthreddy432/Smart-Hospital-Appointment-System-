@@ -289,7 +289,7 @@ export default function BookingModal({
                   >
                     {doctors.map((doc) => (
                       <option key={doc.id} value={doc.id}>
-                        {doc.name} — {doc.specialty} (${doc.consultationFee})
+                        {doc.name} — {doc.specialty} (₹{doc.consultationFee})
                       </option>
                     ))}
                   </select>

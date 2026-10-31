@@ -119,7 +119,7 @@ export default function SeparateAdminPortalPage() {
   const [docQualification, setDocQualification] = useState('MD, FACC');
   const [docRoom, setDocRoom] = useState('Suite 200');
   const [docExp, setDocExp] = useState('10');
-  const [docFee, setDocFee] = useState('150');
+  const [docFee, setDocFee] = useState('800');
   const [docBio, setDocBio] = useState('');
   const [docSubmitting, setDocSubmitting] = useState(false);
 
@@ -377,13 +377,13 @@ export default function SeparateAdminPortalPage() {
       <div className="min-h-screen flex flex-col justify-between p-6 text-slate-900 dark:text-slate-100">
         <div className="max-w-5xl mx-auto w-full flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
           <div className="flex items-center gap-3">
-            <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-slate-300/80 dark:border-slate-700/80 shadow-sm shrink-0 bg-slate-900">
+            <div className="relative w-9 h-9 shrink-0">
               <Image
                 src={SAHS_LOGO_SRC}
                 alt="SAHS Logo"
                 fill
                 sizes="36px"
-                className="object-cover"
+                className="object-contain"
                 priority
                 referrerPolicy="no-referrer"
               />
@@ -520,7 +520,7 @@ export default function SeparateAdminPortalPage() {
           qualification: docQualification,
           roomNumber: docRoom.trim() || 'Suite 200',
           experienceYears: Number(docExp) || 8,
-          consultationFee: Number(docFee) || 150,
+          consultationFee: Number(docFee) || 800,
           bio:
             docBio.trim() ||
             `Board-certified specialist in ${docSpecialty} at SAHS.`,
@@ -823,13 +823,13 @@ export default function SeparateAdminPortalPage() {
       <header className="bg-white/85 dark:bg-[#0B1211]/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 sticky top-0 z-40 transition-colors">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-16 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-slate-300/80 dark:border-slate-700/80 shadow-sm shrink-0 bg-slate-900">
+            <div className="relative w-9 h-9 shrink-0">
               <Image
                 src={SAHS_LOGO_SRC}
                 alt="SAHS Logo"
                 fill
                 sizes="36px"
-                className="object-cover"
+                className="object-contain"
                 priority
                 referrerPolicy="no-referrer"
               />
@@ -1683,7 +1683,7 @@ export default function SeparateAdminPortalPage() {
                   </div>
                   <div>
                     <label className="block font-semibold text-[#17211F] mb-1">
-                      Fee ($)
+                      Fee (₹)
                     </label>
                     <input
                       type="number"
@@ -1721,7 +1721,7 @@ export default function SeparateAdminPortalPage() {
                         {doc.name}
                       </h4>
                       <p className="text-[#64748B]">
-                        {doc.roomNumber} · {doc.qualification} · $
+                        {doc.roomNumber} · {doc.qualification} · ₹
                         {doc.consultationFee}
                       </p>
                     </div>

@@ -195,12 +195,12 @@ export default function HomePage() {
                 >
                   {doctors.length === 0 ? (
                     <option value={1}>
-                      Dr. Elena Rostova — Cardiology ($180)
+                      Dr. Elena Rostova — Cardiology (₹800)
                     </option>
                   ) : (
                     doctors.map((doc) => (
                       <option key={doc.id} value={doc.id}>
-                        {doc.name} — {doc.specialty} (${doc.consultationFee})
+                        {doc.name} — {doc.specialty} (₹{doc.consultationFee})
                       </option>
                     ))
                   )}
@@ -505,7 +505,7 @@ export default function HomePage() {
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                     {doc.roomNumber} · {doc.availableDays.replace(/,/g, ', ')} ·{' '}
                     <span className="font-mono font-semibold text-slate-700 dark:text-slate-200">
-                      ${doc.consultationFee}
+                      ₹{doc.consultationFee}
                     </span>
                   </p>
                 </div>

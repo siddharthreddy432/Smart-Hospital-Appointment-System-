@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       department: String(body.department || `${body.specialty} Department`),
       qualification: String(body.qualification || 'MD, Board Certified'),
       experienceYears: Number(body.experienceYears) || 8,
-      consultationFee: Number(body.consultationFee) || 150,
+      consultationFee: Number(body.consultationFee) || 800,
       roomNumber: String(body.roomNumber || 'Suite 200'),
       bio: String(body.bio || 'Attending specialist at SAHS.'),
       availableDays: String(body.availableDays || 'Monday,Wednesday,Friday'),

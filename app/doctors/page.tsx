@@ -269,7 +269,7 @@ export default function DoctorsPage() {
                     Consultation Fee
                   </span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
-                    ${doc.consultationFee} · {docApptsCount} in queue
+                    ₹{doc.consultationFee} · {docApptsCount} in queue
                   </span>
                 </div>
 

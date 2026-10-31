@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import HospitalProvider from '../components/HospitalProvider';
 
-const SAHS_LOGO_PATH =
-  '/assets/aistudio/Gemini_Generated_Image_xgunhyxgunhyxgun_8142619c.png';
+const SAHS_LOGO_PATH = '/assets/aistudio/sahs-logo-transparent.png';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sahs.telis.tech'),

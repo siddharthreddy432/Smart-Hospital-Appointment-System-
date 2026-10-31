@@ -62,7 +62,7 @@ if (typeof window !== 'undefined') {
 }
 
 export const SAHS_LOGO_SRC =
-  '/assets/aistudio/Gemini_Generated_Image_xgunhyxgunhyxgun_8142619c.png';
+  '/assets/aistudio/sahs-logo-transparent.png';
 
 export interface SessionUser {
   userName: string;
@@ -259,14 +259,14 @@ function PersistentHeader({
             href="/"
             className="inline-flex items-center gap-2.5 whitespace-nowrap shrink-0 group focus-visible:outline-none"
           >
-            <div className="relative w-9 h-9 rounded-lg overflow-hidden ring-1 ring-slate-900/10 dark:ring-white/15 shadow-sm transition-transform duration-150 group-hover:scale-[1.04] group-active:scale-[0.97]">
+            <div className="relative w-9 h-9 shrink-0 transition-transform duration-150 group-hover:scale-[1.05] group-active:scale-[0.96]">
               <Image
                 src={SAHS_LOGO_SRC}
                 alt="SAHS Logo"
                 width={36}
                 height={36}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 priority
               />
             </div>
@@ -530,7 +530,7 @@ const INITIAL_DOCTORS_SEED: Doctor[] = [
     experienceYears: 14,
     roomNumber: 'Suite 204',
     availableDays: 'Monday,Wednesday,Friday',
-    consultationFee: 180,
+    consultationFee: 800,
     rating: '4.9',
     bio: 'Senior interventional cardiologist specializing in preventive heart care and non-invasive diagnostics.',
   },
@@ -543,7 +543,7 @@ const INITIAL_DOCTORS_SEED: Doctor[] = [
     experienceYears: 11,
     roomNumber: 'Suite 310',
     availableDays: 'Tuesday,Thursday,Saturday',
-    consultationFee: 210,
+    consultationFee: 1200,
     rating: '4.8',
     bio: 'Specialist in migraine therapeutics, peripheral neuropathy, and clinical neurophysiology.',
   },
@@ -556,7 +556,7 @@ const INITIAL_DOCTORS_SEED: Doctor[] = [
     experienceYears: 9,
     roomNumber: 'Suite 105',
     availableDays: 'Monday,Tuesday,Thursday,Friday',
-    consultationFee: 140,
+    consultationFee: 650,
     rating: '4.9',
     bio: 'Comprehensive adult primary care, metabolic wellness, and acute outpatient triage.',
   },
@@ -569,7 +569,7 @@ const INITIAL_DOCTORS_SEED: Doctor[] = [
     experienceYears: 16,
     roomNumber: 'Suite 118',
     availableDays: 'Monday,Wednesday,Saturday',
-    consultationFee: 195,
+    consultationFee: 950,
     rating: '4.7',
     bio: 'Joint preservation, sports injury rehabilitation, and minimally invasive arthroscopy.',
   },
@@ -1068,7 +1068,7 @@ export default function HospitalProvider({
                       width={24}
                       height={24}
                       referrerPolicy="no-referrer"
-                      className="w-6 h-6 rounded-md object-cover"
+                      className="w-6 h-6 object-contain"
                     />
                     <span className="font-bold text-slate-900 dark:text-white">
                       SAHS
