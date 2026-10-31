@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -167,6 +167,35 @@ export default function SeparateAdminPortalPage() {
   const [scanStatusMessage, setScanStatusMessage] = useState<string>('');
   const [isGrantingAccess, setIsGrantingAccess] = useState<boolean>(false);
   const [isSimulatingCamera, setIsSimulatingCamera] = useState<boolean>(false);
+  const [cameraActive, setCameraActive] = useState<boolean>(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    setCameraActive(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch {
+      setCameraError('Camera access denied or unavailable. Please check camera permissions in browser settings.');
+      setCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setCameraActive(false);
+  };
 
   const showToast = (msg: string) => {
     setFeedbackBanner(msg);
@@ -1131,41 +1160,88 @@ export default function SeparateAdminPortalPage() {
                   </select>
                 </div>
 
-                {/* Simulated Scanner Viewfinder */}
-                <div className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-6 flex flex-col items-center justify-center text-center min-h-[180px]">
-                  {/* Viewfinder Target Reticle */}
-                  <div className="absolute inset-4 pointer-events-none border border-teal-500/30 rounded-xl flex flex-col justify-between p-2">
-                    <div className="flex justify-between">
-                      <span className="w-4 h-4 border-t-2 border-l-2 border-teal-400" />
-                      <span className="w-4 h-4 border-t-2 border-r-2 border-teal-400" />
+                {/* Live Camera Viewfinder & Permission Prompt */}
+                <div className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 p-6 flex flex-col items-center justify-center text-center min-h-[220px]">
+                  {cameraActive ? (
+                    <div className="relative w-full h-[200px] flex items-center justify-center">
+                      <video
+                        ref={videoRef}
+                        playsInline
+                        muted
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                      <div className="absolute inset-4 pointer-events-none border border-teal-500/50 rounded-xl flex flex-col justify-between p-2">
+                        <div className="flex justify-between">
+                          <span className="w-4 h-4 border-t-2 border-l-2 border-teal-400" />
+                          <span className="w-4 h-4 border-t-2 border-r-2 border-teal-400" />
+                        </div>
+                        <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent animate-pulse" />
+                        <div className="flex justify-between">
+                          <span className="w-4 h-4 border-b-2 border-l-2 border-teal-400" />
+                          <span className="w-4 h-4 border-b-2 border-r-2 border-teal-400" />
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={stopCamera}
+                        className="absolute bottom-3 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold cursor-pointer shadow"
+                      >
+                        Stop Camera
+                      </button>
                     </div>
-                    {isSimulatingCamera && (
-                      <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent animate-pulse" />
-                    )}
-                    <div className="flex justify-between">
-                      <span className="w-4 h-4 border-b-2 border-l-2 border-teal-400" />
-                      <span className="w-4 h-4 border-b-2 border-r-2 border-teal-400" />
-                    </div>
-                  </div>
+                  ) : (
+                    <>
+                      {/* Viewfinder Target Reticle */}
+                      <div className="absolute inset-4 pointer-events-none border border-teal-500/30 rounded-xl flex flex-col justify-between p-2">
+                        <div className="flex justify-between">
+                          <span className="w-4 h-4 border-t-2 border-l-2 border-teal-400" />
+                          <span className="w-4 h-4 border-t-2 border-r-2 border-teal-400" />
+                        </div>
+                        {isSimulatingCamera && (
+                          <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent animate-pulse" />
+                        )}
+                        <div className="flex justify-between">
+                          <span className="w-4 h-4 border-b-2 border-l-2 border-teal-400" />
+                          <span className="w-4 h-4 border-b-2 border-r-2 border-teal-400" />
+                        </div>
+                      </div>
 
-                  <QrCode className={`w-12 h-12 mb-2 transition-transform duration-200 ${isSimulatingCamera ? 'text-teal-400 scale-110' : 'text-slate-600'}`} />
-                  <p className="text-xs font-bold text-white">
-                    {isSimulatingCamera ? 'Decoding encrypted QR stream...' : 'Optical Kiosk Scanner Ready'}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1 max-w-xs">
-                    Hold patient mobile screen up to the scanner or paste the raw SAHS-ADMIN-QR-V3 string below.
-                  </p>
+                      <QrCode className={`w-12 h-12 mb-2 transition-transform duration-200 ${isSimulatingCamera ? 'text-teal-400 scale-110' : 'text-slate-600'}`} />
+                      <p className="text-xs font-bold text-white">
+                        {isSimulatingCamera ? 'Decoding encrypted QR stream...' : 'Optical Kiosk Scanner Ready'}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1 max-w-xs">
+                        Allow camera permission to scan patient QR passes or paste the raw SAHS-ADMIN-QR-V3 string below.
+                      </p>
 
-                  {selectedScanApptId > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => handleSimulateOpticalScan(selectedScanApptId)}
-                      disabled={isSimulatingCamera}
-                      className="mt-3 px-3 py-1.5 rounded-lg text-xs font-bold sahs-button-primary inline-flex items-center gap-1.5"
-                    >
-                      <Scan className="w-3.5 h-3.5" />
-                      <span>{isSimulatingCamera ? 'Scanning...' : 'Simulate Camera Laser Scan'}</span>
-                    </button>
+                      {cameraError && (
+                        <p className="text-[11px] text-rose-400 mt-1 font-semibold">
+                          {cameraError}
+                        </p>
+                      )}
+
+                      <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+                        <button
+                          type="button"
+                          onClick={startCamera}
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold sahs-button-primary inline-flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Scan className="w-3.5 h-3.5" />
+                          <span>Request Camera &amp; Scan QR</span>
+                        </button>
+
+                        {selectedScanApptId > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => handleSimulateOpticalScan(selectedScanApptId)}
+                            disabled={isSimulatingCamera}
+                            className="px-3 py-2 rounded-xl text-xs font-bold sahs-button-secondary inline-flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <span>{isSimulatingCamera ? 'Scanning...' : 'Simulate Scan'}</span>
+                          </button>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
 

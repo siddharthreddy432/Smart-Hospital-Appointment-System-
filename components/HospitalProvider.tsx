@@ -62,7 +62,7 @@ if (typeof window !== 'undefined') {
 }
 
 export const SAHS_LOGO_SRC =
-  '/assets/aistudio/sahs-logo-transparent.png';
+  '/assets/aistudio/Gemini_Generated_Image_xgunhyxgunhyxgun_8142619c.png';
 
 export interface SessionUser {
   userName: string;
