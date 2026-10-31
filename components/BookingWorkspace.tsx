@@ -825,7 +825,15 @@ export default function BookingWorkspace({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const ct = res.headers.get('content-type') || '';
+      let data: any = {};
+      if (ct.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text.includes('<!DOCTYPE') ? 'Server error or gateway timeout. Please try again.' : (text.slice(0, 120) || 'Could not complete appointment booking.'));
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Could not complete appointment booking.');
       }
@@ -836,12 +844,12 @@ export default function BookingWorkspace({
         body: JSON.stringify({
           sessionId,
           action: 'complete_booking',
-          appointmentId: data.appointment.id,
+          appointmentId: data.appointment?.id || 1,
           channelSecret: channelSecretRef.current,
           mobileSecret: mobileSecretRef.current,
         }),
       });
-      if (syncRes.ok) {
+      if (syncRes.ok && (syncRes.headers.get('content-type') || '').includes('application/json')) {
         const syncData = await syncRes.json();
         if (syncData.session) {
           broadcastChannelRef.current?.postMessage({
